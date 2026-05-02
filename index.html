@@ -378,9 +378,9 @@
                 <option value="">Pilih paket</option>
               </select>
             </div>
-            <div class="form-field" id="areasDisplay" style="display: none;">
-              <label>Area & Jumlah:</label>
-              <ul class="areas-list" id="areasList"></ul>
+            <div id="areasInfo" style="display:none; margin-top: 12px; padding: 12px; background: rgba(29,78,216,.08); border-radius: 12px; border-left: 3px solid var(--primary);">
+              <p style="margin: 0 0 8px 0; font-weight: 600; color: var(--text); font-size: 0.9rem;">Area & Jumlah:</p>
+              <ul id="areasList" class="areas-list"></ul>
             </div>
             <div class="order-footer">
               <a id="stockUrl" class="btn-stock" target="_blank"><i class="fas fa-search"></i> Cek Stok Manual</a>
@@ -484,7 +484,7 @@
     const phoneInput = document.getElementById('phoneInput');
     const serviceName = document.getElementById('serviceName');
     const serviceIcon = document.getElementById('serviceIcon');
-    const areasDisplay = document.getElementById('areasDisplay');
+    const areasInfo = document.getElementById('areasInfo');
     const areasList = document.getElementById('areasList');
 
     function selectService(key) {
@@ -524,23 +524,21 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function displayAreas() {
-      const packageValue = packageSelect.value;
+    packageSelect.addEventListener('change', function() {
+      const packageValue = this.value;
       if (!packageValue) {
-        areasDisplay.style.display = 'none';
+        areasInfo.style.display = 'none';
         return;
       }
       const parts = packageValue.split('||');
       const areas = JSON.parse(parts[3]);
       if (areas && areas.length > 0) {
         areasList.innerHTML = areas.map(area => `<li>${area}</li>`).join('');
-        areasDisplay.style.display = 'block';
+        areasInfo.style.display = 'block';
       } else {
-        areasDisplay.style.display = 'none';
+        areasInfo.style.display = 'none';
       }
-    }
-
-    packageSelect.addEventListener('change', displayAreas);
+    });
 
     function clearDetail() {
       detailSection.classList.remove('active');
@@ -549,7 +547,7 @@
       phoneInput.value = '';
       areaUrl.style.display = 'none';
       stockUrl.style.display = 'inline-flex';
-      areasDisplay.style.display = 'none';
+      areasInfo.style.display = 'none';
       areasList.innerHTML = '';
       currentService = null;
       window.location.hash = '';
