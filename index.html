@@ -190,76 +190,32 @@
       padding: 8px 12px;
     }
     .detail-body { padding: 0 28px 28px; }
-    
-    /* Styles untuk tabel paket */
-    .packages-section {
-      margin-bottom: 30px;
-    }
-    .packages-section h3 {
-      margin: 0 0 18px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .packages-table {
+    .package-table {
       width: 100%;
       border-collapse: collapse;
       margin-bottom: 22px;
-      overflow: hidden;
-      border-radius: 12px;
-      border: 1px solid rgba(15,23,42,.08);
     }
-    .packages-table th,
-    .packages-table td {
-      padding: 16px;
+    .package-table th,
+    .package-table td {
+      padding: 14px 16px;
       text-align: left;
       border-bottom: 1px solid rgba(15,23,42,.08);
     }
-    .packages-table th {
-      background: rgba(29, 78, 216, 0.08);
+    .package-table th {
       font-weight: 700;
-      color: var(--primary);
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .packages-table tbody tr {
-      transition: background 0.2s ease;
-    }
-    .packages-table tbody tr:hover {
-      background: rgba(59,130,246,.06);
-    }
-    .package-name {
-      font-weight: 700;
-      color: var(--text);
-      font-size: 0.95rem;
-    }
-    .package-price {
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 1.05rem;
-    }
-    .areas-info {
       color: var(--muted);
-      font-size: 0.85rem;
-      line-height: 1.5;
+      font-size: .95rem;
     }
-    .btn-select-package {
-      background: linear-gradient(135deg, var(--primary), #22c55e);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 10px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      font-size: 0.9rem;
+    .package-table tbody tr:hover { background: rgba(59,130,246,.06); }
+    .package-name { font-weight: 600; color: var(--text); }
+    .package-price { color: var(--primary); font-weight: 700; }
+    .areas-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-top: 8px;
     }
-    .btn-select-package:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 16px rgba(29,78,216,.18);
-    }
-    
     .order-card {
       background: var(--surface-soft);
       border-radius: 24px;
@@ -358,7 +314,6 @@
       .detail-header, .order-card { padding: 22px; }
       .order-footer { flex-direction: column; align-items: stretch; }
       .btn-order, .btn-stock { width: 100%; }
-      .packages-table th, .packages-table td { padding: 12px; font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -411,33 +366,21 @@
           <button class="btn-close" type="button" onclick="clearDetail()">Kembali</button>
         </div>
         <div class="detail-body">
-          <!-- Tabel Paket -->
-          <div class="packages-section">
-            <h3>Daftar Paket Tersedia</h3>
-            <table class="packages-table" id="packagesTable">
-              <thead>
-                <tr>
-                  <th>Nama Paket</th>
-                  <th id="areaHeaderCol" style="display: none;">Area & Jumlah</th>
-                  <th>Harga</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody id="packagesTableBody">
-              </tbody>
-            </table>
-          </div>
-
-          <!-- Form Order -->
           <div class="order-card">
-            <h3>Konfirmasi Pesanan</h3>
+            <h3>Order Sekarang</h3>
             <div class="form-field">
               <label for="phoneInput">Nomor Tujuan</label>
               <input id="phoneInput" type="text" placeholder="Contoh: 087712345678" maxlength="13" />
             </div>
             <div class="form-field">
-              <label for="selectedPackageDisplay">Paket Terpilih</label>
-              <input id="selectedPackageDisplay" type="text" placeholder="Pilih paket dari tabel di atas" readonly style="background: rgba(15,23,42,.05); cursor: not-allowed;" />
+              <label for="packageSelect">Pilih Paket</label>
+              <select id="packageSelect">
+                <option value="">Pilih paket</option>
+              </select>
+            </div>
+            <div class="form-field" id="areasDisplay" style="display: none;">
+              <label>Area & Jumlah:</label>
+              <ul class="areas-list" id="areasList"></ul>
             </div>
             <div class="order-footer">
               <a id="stockUrl" class="btn-stock" target="_blank"><i class="fas fa-search"></i> Cek Stok Manual</a>
@@ -465,7 +408,6 @@
         name: 'AKRAB XLA',
         icon: 'fas fa-mobile-alt',
         stockLink: 'https://stokakrab.vercel.app/',
-        showAreas: true,
         plans: [
           { title: 'XLA14 SuperMini', price: 'Rp48.000', areas: ['Area 1: 13–15 GB', 'Area 2: 15–17 GB', 'Area 3: 20–22 GB', 'Area 4: 30–32 GB'] },
           { title: 'XLA32 Mini', price: 'Rp61.000', areas: ['Area 1: 31.75–33.75 GB', 'Area 2: 33.75–35.75 GB', 'Area 3: 38.75–40.75 GB', 'Area 4: 48.75–50.75 GB'] },
@@ -479,7 +421,6 @@
         name: 'AKRAB XDA',
         icon: 'fas fa-users',
         stockLink: 'https://juraganxl.my.id/',
-        showAreas: true,
         plans: [
           { title: 'XDA13', price: 'Rp49.500', areas: ['Area 1: 13 GB', 'Area 2: 15 GB', 'Area 3: 20 GB', 'Area 4: 30 GB'] },
           { title: 'XDA19', price: 'Rp52.500', areas: ['Area 1: 19 GB', 'Area 2: 21 GB', 'Area 3: 26 GB', 'Area 4: 36 GB'] },
@@ -497,7 +438,6 @@
         name: 'CIRCLE XCLP',
         icon: 'fas fa-globe',
         stockLink: 'https://juraganxl.my.id/',
-        showAreas: false,
         plans: [
           { title: 'XCLP5 CIRCLE 5–9GB', price: 'Rp20.000', areas: [] },
           { title: 'XCLP10 CIRCLE 10–14GB', price: 'Rp25.500', areas: [] },
@@ -530,7 +470,6 @@
         name: 'MASA AKTIF',
         icon: 'fas fa-hourglass-half',
         stockLink: '',
-        showAreas: false,
         plans: [
           { title: 'XL-AXIS NON AKUMULASI', price: 'Rp8.000', areas: [] }
         ]
@@ -539,40 +478,29 @@
 
     const detailSection = document.getElementById('detailSection');
     const landingContent = document.getElementById('landingContent');
-    const packagesTableBody = document.getElementById('packagesTableBody');
-    const areaHeaderCol = document.getElementById('areaHeaderCol');
+    const packageSelect = document.getElementById('packageSelect');
     const stockUrl = document.getElementById('stockUrl');
     const areaUrl = document.getElementById('areaUrl');
     const phoneInput = document.getElementById('phoneInput');
     const serviceName = document.getElementById('serviceName');
     const serviceIcon = document.getElementById('serviceIcon');
-    const selectedPackageDisplay = document.getElementById('selectedPackageDisplay');
-
-    let currentService = null;
-    let selectedPackage = null;
+    const areasDisplay = document.getElementById('areasDisplay');
+    const areasList = document.getElementById('areasList');
 
     function selectService(key) {
       const service = serviceData[key];
       if (!service) return;
-      
       landingContent.style.display = 'none';
       detailSection.classList.add('active');
       serviceName.textContent = service.name;
       serviceIcon.innerHTML = `<i class="${service.icon}"></i>`;
       stockUrl.href = service.stockLink;
       stockUrl.innerHTML = '<i class="fas fa-search"></i> Cek Stok Manual';
-      
-      // Tampilkan/sembunyikan kolom area
-      areaHeaderCol.style.display = service.showAreas ? 'table-cell' : 'none';
-      
-      // Setup button stok
       if (key === 'masa-aktif') {
         stockUrl.style.display = 'none';
       } else {
         stockUrl.style.display = 'inline-flex';
       }
-      
-      // Setup button area
       if (key === 'paket-akrab-xla' || key === 'akrab-xda') {
         areaUrl.href = 'https://cekareaxl.vercel.app/';
         areaUrl.innerHTML = '<i class="fas fa-map-marker-alt"></i> Cek Area';
@@ -584,70 +512,68 @@
       } else {
         areaUrl.style.display = 'none';
       }
-      
-      // Populate tabel paket
-      packagesTableBody.innerHTML = '';
-      service.plans.forEach((plan, index) => {
-        const row = document.createElement('tr');
-        const areasText = service.showAreas ? plan.areas.join('<br>') : '-';
-        row.innerHTML = `
-          <td class="package-name">${plan.title}</td>
-          ${service.showAreas ? `<td class="areas-info">${areasText}</td>` : ''}
-          <td class="package-price">${plan.price}</td>
-          <td>
-            <button class="btn-select-package" onclick="selectPackage('${key}', ${index}, '${plan.title}', '${plan.price}')">
-              <i class="fas fa-check"></i> Pilih
-            </button>
-          </td>
-        `;
-        packagesTableBody.appendChild(row);
+      service.plans.forEach(plan => {
+        const option = document.createElement('option');
+        option.value = `${key}||${plan.title}||${plan.price}||${JSON.stringify(plan.areas)}`;
+        option.textContent = `${plan.title} — ${plan.price}`;
+        packageSelect.appendChild(option);
       });
-      
       phoneInput.value = localStorage.getItem('lastPhone') || '';
       currentService = key;
-      selectedPackage = null;
-      selectedPackageDisplay.value = '';
       window.location.hash = key;
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function selectPackage(serviceKey, planIndex, planTitle, planPrice) {
-      const service = serviceData[serviceKey];
-      const plan = service.plans[planIndex];
-      selectedPackage = {
-        serviceKey: serviceKey,
-        title: plan.title,
-        price: plan.price
-      };
-      selectedPackageDisplay.value = `${plan.title} — ${plan.price}`;
-      window.scrollTo({ top: document.getElementById('phoneInput').offsetTop - 100, behavior: 'smooth' });
+    function displayAreas() {
+      const packageValue = packageSelect.value;
+      if (!packageValue) {
+        areasDisplay.style.display = 'none';
+        return;
+      }
+      const parts = packageValue.split('||');
+      const areas = JSON.parse(parts[3]);
+      if (areas && areas.length > 0) {
+        areasList.innerHTML = areas.map(area => `<li>${area}</li>`).join('');
+        areasDisplay.style.display = 'block';
+      } else {
+        areasDisplay.style.display = 'none';
+      }
     }
+
+    packageSelect.addEventListener('change', displayAreas);
 
     function clearDetail() {
       detailSection.classList.remove('active');
       landingContent.style.display = 'block';
-      packagesTableBody.innerHTML = '';
+      packageSelect.innerHTML = '<option value="">Pilih paket</option>';
       phoneInput.value = '';
-      selectedPackageDisplay.value = '';
       areaUrl.style.display = 'none';
       stockUrl.style.display = 'inline-flex';
+      areasDisplay.style.display = 'none';
+      areasList.innerHTML = '';
       currentService = null;
-      selectedPackage = null;
       window.location.hash = '';
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function orderNow() {
+      const serviceKey = currentService;
       const phone = phoneInput.value.trim();
-      if (!selectedPackage || !phone || !/^\d{10,13}$/.test(phone)) {
-        alert('Masukkan nomor tujuan dan pilih paket yang valid.');
+      const packageValue = packageSelect.value;
+      if (!serviceKey || !phone || !packageValue || !/^\d{10,13}$/.test(phone)) {
+        alert('Masukkan nomor tujuan dan paket yang valid.');
         return;
       }
       localStorage.setItem('lastPhone', phone);
-      const serviceLabel = serviceData[selectedPackage.serviceKey].name;
-      const message = encodeURIComponent(`Halo Juragan Paket Data, saya ingin order:\n\nLayanan: ${serviceLabel}\nNomor Tujuan: ${phone}\nPaket Dipilih: ${selectedPackage.title} — ${selectedPackage.price}\n\nMohon segera diproses. Terima kasih!`);
+      const parts = packageValue.split('||');
+      const packageName = parts[1];
+      const packagePrice = parts[2];
+      const serviceLabel = serviceData[serviceKey].name;
+      const message = encodeURIComponent(`Halo Juragan Paket Data, saya ingin order:\n\nLayanan: ${serviceLabel}\nNomor Tujuan: ${phone}\nPaket Dipilih: ${packageName} — ${packagePrice}\n\nMohon segera diproses. Terima kasih!`);
       window.open(`https://wa.me/${whatsappAdmin}?text=${message}`, '_blank');
     }
+
+    let currentService = null;
 
     if (window.location.hash) {
       const target = window.location.hash.replace('#', '');
